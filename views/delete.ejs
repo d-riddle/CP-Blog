@@ -1,0 +1,10 @@
+<%- include("partials/header"); -%>
+<h1>Delete Your Post</h1>
+<form action="/delete" method="post">
+  <div class="form-group">
+    <label for="exampleInputEmail1">Title</label>
+    <input type="text" class="form-control" name="dpostTitle">
+  </div>
+  <button type="submit" class="btn btn-primary" name="button">Delete</button>
+</form>
+<%- include("partials/footer"); -%>

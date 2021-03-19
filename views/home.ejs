@@ -1,0 +1,8 @@
+<%- include("partials/header"); -%>
+<h1>Home</h1>
+<p><%=homecontent%></p>
+<% addcontent.forEach(function(ob){ %>
+  <h1><%=ob.btitle%></h1>
+  <p><%=ob.bbody.substring(0,100)+"..."%><a href="/posts/<%=ob._id%>">Read More</a></p>
+<%});%>
+<%- include("partials/footer"); -%>
