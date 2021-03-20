@@ -17,11 +17,14 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 mongoose.connect("mongodb+srv://admin-ankit:123@cluster0.f47j9.mongodb.net/blogDB?retryWrites=true&w=majority");
-
-const bSchema={
-  btitle:String,
-  bbody:String
+const opts = {
+  // Make Mongoose use Unix time (seconds since Jan 1, 1970)
+  timestamps: { currentTime: () => Math.floor(Date.now() / 1000) },
 };
+const bSchema=mongoose.Schema({
+  btitle:String,
+  bbody:String,
+},opts);
 
 const Bpost=mongoose.model("Bpost",bSchema);
 
@@ -62,7 +65,7 @@ app.get("/compose",function(req,res){
 // });
 
 app.get("/",function(req,res){
-  Bpost.find({},function(err,postitem){
+  Bpost.find({},null,{sort: {createdAt: -1}},function(err,postitem){
     if(err){
       console.log(err);
     }else {
@@ -90,19 +93,41 @@ app.get("/posts/:topic",function(req,res){
 app.post("/compose",function(req,res){
   const bpost=new Bpost({
     btitle:req.body.postTitle,
-    bbody:req.body.postBody
+    bbody:req.body.postBody,
   });
   bpost.save(function(err){
     if(!err){
       res.redirect("/");
     }
   });
+});
+app.post("/updcompose",function(req,res){
+    const pid=req.body.postid;
+    const ptitle=req.body.postTitle;
+    const pbody=req.body.postBody;
+    Bpost.deleteOne({_id:pid},function(err){
+      if(err){
+        console.log(err);
+      }else{
+        const bpost1=new Bpost({
+          btitle:ptitle,
+          bbody:pbody,
+        });
+        bpost1.save(function(err){
+          if(!err){
+            res.redirect("/");
+          }
+        });
+
+      }
+    });
+  });
   // const obj={
   //   tit:req.body.postTitle,
   //   bod:req.body.postBody
   // };
   // arr.push(obj);
-});
+
 app.post("/delete",function(req,res){
   const posttodelete=req.body.dpost;
   //console.log(posttodelete);
@@ -117,11 +142,18 @@ app.post("/delete",function(req,res){
 });
 
 //uncomment when you want to use update
-// app.post("/update",function(req,res){
-//   let myupdpost=req.body.updpost;
-//   console.log(myupdpost);
-//   res.render("updcompose",{blogppost:myupdpost});
-// });
+app.post("/update",function(req,res){
+  let myupdpost=req.body.updpost;
+  Bpost.findOne({_id:myupdpost},function(err,post){
+    if(err){
+      console.log(err);
+    }else {
+      res.render("updcompose",{blogppost:post});
+      //console.log("Match Found");
+    }
+  });
+  //res.render("updcompose",{blogppost:myupdpost});
+});
 let port = process.env.PORT;
 if (port == null || port == "") {
   port = 3000;

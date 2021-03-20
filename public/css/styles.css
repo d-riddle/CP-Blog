@@ -39,3 +39,8 @@ html{
 	font-size: 12px;
   color: #fff;
 }
+.ff {
+  display:inline-block;
+  padding-bottom:7px;
+  padding-top: 5px;
+}

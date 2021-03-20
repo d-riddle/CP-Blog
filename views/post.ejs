@@ -1,10 +1,10 @@
 <%- include("partials/header"); -%>
 <h1><%=fullPagePost.btitle%></h1>
 <p><%=fullPagePost.bbody%></p>
-<form action="/delete" method="post">
+<form class="ff" action="/delete" method="post">
   <button type="submit" class="btn btn-danger" name="dpost" value="<%=fullPagePost._id%>">Delete</button>
 </form>
-<%# <form action="/update" method="post">
- <button type="submit" class="btn btn-danger" name="updpost" value="">Update</button>
-</form> pass the fullPagePost in the value as done above under ejs tags%>
+ <form class="ff" action="/update" method="post">
+ <button type="submit" class="btn btn-danger" name="updpost" value="<%=fullPagePost._id%>">Update</button>
+</form>
 <%- include("partials/footer"); -%>
