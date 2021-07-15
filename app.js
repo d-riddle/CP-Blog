@@ -16,7 +16,7 @@ app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
-mongoose.connect("mongodb+srv://admin-ankit:123@cluster0.f47j9.mongodb.net/blogDB?retryWrites=true&w=majority");
+mongoose.connect("mongodb+srv://admin-ankit:Ankit@1234@cluster0.f47j9.mongodb.net/blogDB?retryWrites=true&w=majority");
 const opts = {
   // Make Mongoose use Unix time (seconds since Jan 1, 1970)
   timestamps: { currentTime: () => Math.floor(Date.now() / 1000) },
