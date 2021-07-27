@@ -7,8 +7,8 @@ const lodash=require("lodash");
 const mongoose=require("mongoose");
 
 const homeStartingContent = "This is a competitive programming journal where group of cp enthusiasts brings good article of certain cp topics at one place, so that we can learn effectively and easily.We try to include all important data structures and algorithms needed to master cp. Please use this site only to read and if you want to contribute some article to this website then first contact us with info given in contact us page. I hope this website will prove resoursefull to you all. Happy learning!";
-const aboutContent = "Presently, this site is maintained by me. I initially designed this site for myself so that i can bring all important tricks and ideas related to competitive programmming that i learn from different sites and blogs at one place for future revision. Later i decided to give to some of my close friends so that we all can learn effectively and easily.Please use this site only to read and if you want to contribute some article to this website then first contact us with info given in contact us page.";
-const contactContent = "You can contact us at codeforces my id is riddle279 . You can also contact us with mail my email is sahoo####@gmail.com";
+const aboutContent = "Presently, this site is maintained by Ankit. I initially designed this site for myself so that i can bring all important tricks and ideas related to competitive programmming that i learn from different sites and blogs at one place for future revision. Later i decided to give to some of my close friends so that we all can learn effectively and easily.Please use this site only to read and if you want to contribute some article to this website then first contact us with info given in contact us page.";
+const contactContent = "You can contact us at codeforces my id is riddle279 . You can also contact us with mail my email is sahooankit12@gmail.com";
 
 const app = express();
 
@@ -30,6 +30,8 @@ const opts = {
   // Make Mongoose use Unix time (seconds since Jan 1, 1970)
   timestamps: { currentTime: () => Math.floor(Date.now() / 1000) },
 };
+
+// Declaring Schema for posts.
 const bSchema=mongoose.Schema({
   btitle:String,
   bbody:String,
@@ -37,42 +39,22 @@ const bSchema=mongoose.Schema({
 
 const Bpost=mongoose.model("Bpost",bSchema);
 
-// const bpost1=new Bpost({
-//   btitle: "post1",
-//   bbody: "how are you"
-// });
-// const bpost2=new Bpost({
-//   btitle:"post2",
-//   bbody:"i am fine"
-// });
-//
-// let darr=[bpost1,bpost2];
-// Bpost.insertMany(darr,function(err){
-//   if(err){
-//     console.log(err);
-//   } else{
-//     console.log("succesfully saved to DB");
-//   }
-// });
-
-//let arr=[];
-
+// To render "About Us" page with aboutContent declared above. 
 app.get("/about",function(req,res){
   res.render("about",{aboutcontent:aboutContent});
 });
+
+// To render "Contact Us" page with contactContent declared above.
 app.get("/contact",function(req,res){
   res.render("contact",{contactcontent:contactContent});
 });
+
+// To render "Compose" page.
 app.get("/compose",function(req,res){
   res.render("compose");
 });
-// app.get("/delete",function(req,res){
-//   res.render("delete");
-// });
-// app.get("/updcompose",function(req,res){
-//   res.render()
-// });
 
+// To render "Home" page with homeStartingContent declared above and all posts in sorted order(Most recent post is at top).
 app.get("/",function(req,res){
   Bpost.find({},null,{sort: {createdAt: -1}},function(err,postitem){
     if(err){
@@ -82,23 +64,23 @@ app.get("/",function(req,res){
       addcontent:postitem});
     }
   });
-
 });
 
+// To render fullPagePost for each post.
 app.get("/posts/:topic",function(req,res){
   let myvar=req.params.topic;
-  let flag=false;
 
   Bpost.findOne({_id:myvar},function(err,post){
     if(err){
       console.log(err);
     }else {
       res.render("post",{fullPagePost:post});
-      //console.log("Match Found");
     }
   });
 
 });
+
+// Logic to compose a post, when publish button is clicked.
 app.post("/compose",function(req,res){
   const bpost=new Bpost({
     btitle:req.body.postTitle,
@@ -110,6 +92,8 @@ app.post("/compose",function(req,res){
     }
   });
 });
+
+// Logic to update a post.
 app.post("/updcompose",function(req,res){
     const pid=req.body.postid;
     const ptitle=req.body.postTitle;
@@ -131,15 +115,11 @@ app.post("/updcompose",function(req,res){
       }
     });
   });
-  // const obj={
-  //   tit:req.body.postTitle,
-  //   bod:req.body.postBody
-  // };
-  // arr.push(obj);
 
+// Logic to delete a post.
 app.post("/delete",function(req,res){
   const posttodelete=req.body.dpost;
-  //console.log(posttodelete);
+
   Bpost.deleteOne({_id:posttodelete},function(err){
     if(err){
       console.log(err);
@@ -150,7 +130,7 @@ app.post("/delete",function(req,res){
 
 });
 
-//uncomment when you want to use update
+// Wrapper to update a post.
 app.post("/update",function(req,res){
   let myupdpost=req.body.updpost;
   Bpost.findOne({_id:myupdpost},function(err,post){
@@ -158,11 +138,11 @@ app.post("/update",function(req,res){
       console.log(err);
     }else {
       res.render("updcompose",{blogppost:post});
-      //console.log("Match Found");
     }
   });
-  //res.render("updcompose",{blogppost:myupdpost});
 });
+
+// Declaring the port on which the app will listen.
 let port = process.env.PORT;
 if (port == null || port == "") {
   port = 3000;
